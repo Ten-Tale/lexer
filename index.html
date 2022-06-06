@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Вариант 25</h1>
+    <div class="code-wrapper">
+      <div class="wrapper">
+        <div class="header-wrapper">
+          <h3>Код</h3>
+          <button id=clear>Очистить</button>
+        </div>
+        <div id="input" contenteditable></div>
+      </div>
+
+
+      <div class="wrapper">
+      <h3>БНФ</h3>
+      <pre class="bnf">
+Язык = "Программа" Звенья "Конец"
+Звенья = Звено";"...Звено
+Звено = "Ввод текста" Опер";"...Опер
+Опер = Метка...Метка ":" Перем "=" Прав. ч
+Прав.ч = </-/> Блок Зн1...Блок
+Зн1 = "+"!"-"
+Блок = Часть Зн2...Часть
+Зн2 = "*"!"/"
+Часть = Частица"^"...Частица
+Частица = Пер!Цел!"("Прав.ч")"!"["Прав.ч"]"
+//глубина вложенности "[" не больше 2
+Пер = Буква Циф Циф Циф
+Цел = циф...циф
+Метка = Цел
+Буква = "А"!"Б"!...!"Я"
+Циф = "0"!"1"!...!"7"
+      </pre>
+      </div>
+    </div>
+
+
+    <div class="wrapper">
+      <h3>Вывод</h3>
+      <div id="output"></div>
+      <button id="action">Пуск</button>
+    </div>
+  </div>
+
+  <script type="module" src="src/index.js"></script>
+</body>
+</html>
