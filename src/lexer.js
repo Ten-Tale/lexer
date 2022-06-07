@@ -4,10 +4,13 @@ import t from "./TokenList.js";
 import { customErrorList } from './TokenList.js';
 
 
-const _parenthesesStack = [];
+let _parenthesesStack = [];
 const _maxSquareParenthesesDepth = 2;
 let _squareParenthesesDepthCounter = 0;
 
+export function clearList() {
+  _parenthesesStack = []
+}
 
 export function start(text) {
   if (text.match(t.symbols.regex)) {
@@ -49,7 +52,7 @@ function checkOperator(text, isFirstOccurance = false) {
       return checkColon(nextTokenText)
     }
 
-    throw ({ message: "Оператор должен начинаться с метки, состоящей из целых чисел", text: nextTokenText })
+    throw ({ message: t.identificator.afterErrorMessage, text: nextTokenText })
   }
 
   if (isFirstOccurance) {
@@ -94,7 +97,6 @@ function checkAssign(text) {
 }
 
 function checkRightPart(text, isContinuing = false, isEmpty = false, parenthesesBefore = false) {
-  
   if (matchAny(
         text, 
         t.openingCircleBracket.regex,
@@ -126,18 +128,27 @@ function checkRightPart(text, isContinuing = false, isEmpty = false, parentheses
           return checkOperator(nextTokenList, true)
         }
 
-        throw ({ message: "Оператор должен начинаться с метки, состоящей из целых чисел", text: nextTokenList })
+        throw ({ message: "После знака \";\" ожидается оператор, начинающийся с метки, или звено, начинающееся со строки \"Ввод текста\"", text: nextTokenList })
       }
 
       if (text.match(t.end.regex)) {
         if (isEmpty) {
           throw ({ message: customErrorList.unexpectedValueInRigthPart, text: text })
         }
-  
+        
+        if (_parenthesesStack.length) {
+          throw ({ message: customErrorList.noOpeningParentheses, text: text })
+        }
+
         return
       }
   
       if (text.length < t.end.name.length) {
+        if (isEmpty) {
+          throw ({ message: customErrorList.unexpectedValueInRigthPart, text: text })
+        }
+        
+
         throw ({ message: t.end.errorMessage, text: text })
       }
 
@@ -178,11 +189,19 @@ function checkRightPart(text, isContinuing = false, isEmpty = false, parentheses
         if (isEmpty) {
           throw ({ message: customErrorList.unexpectedValueInRigthPart, text: text })
         }
+
+        if (_parenthesesStack.length) {
+          throw ({ message: customErrorList.noOpeningParentheses, text: text })
+        }
   
         return
       }
   
       if (text.length < t.end.name.length) {
+        if (isEmpty) {
+          throw ({ message: customErrorList.unexpectedValueInRigthPart, text: text })
+        }
+
         throw ({ message: t.end.errorMessage, text: text })
       }
     }
@@ -225,13 +244,21 @@ function checkRightPart(text, isContinuing = false, isEmpty = false, parentheses
 
     if (text.match(t.end.regex)) {
       if (isEmpty) {
-        throw ({ message: customErrorList.unexpectedValueInRigthPart, text: text })
+        throw ({ message: customErrorList.emptyRightPart, text: text })
+      }
+
+      if (_parenthesesStack.length) {
+        throw ({ message: customErrorList.noOpeningParentheses, text: text })
       }
 
       return
     }
 
     if (text.length < t.end.name.length) {
+      if (isEmpty) {
+        throw ({ message: customErrorList.emptyRightPart, text: text })
+      }
+
       throw ({ message: t.end.errorMessage, text: text })
     }
 

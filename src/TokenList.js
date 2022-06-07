@@ -1,6 +1,6 @@
 export default {
   begin: {
-    regex: /^ ?Программа /i,
+    regex: /^ ?Программа ?/i,
     errorMessage: "Язык должен начинаться со строки \"Программа\"",
     name: "Программа"
   },
@@ -11,7 +11,7 @@ export default {
   },
   
   member: {
-    regex: /^ввод текста /i,
+    regex: /^ввод текста ?/i,
     errorMessage: "Допущена ошибка в звене",
     firstOccuranceErrorMessage: "После строки \"Программа\" должно идти звено, начинающееся с  \"ввод текста\"",
     name: "Звено",
@@ -19,13 +19,13 @@ export default {
   identificator: {
     regex: /^[0-7]+ ?/i,
     errorMessage: "Допущена ошибка в метке",
-    firstOccuranceErrorMessage: "В операторе должна присутствовать хотя бы одна метка формата Буква Циф Циф Циф",
+    firstOccuranceErrorMessage: "В операторе должна присутствовать хотя бы одна метка формата Циф Циф Циф",
     afterErrorMessage: "После метки допустимо использование терминала \"Метка\" или знака \":\"",
     name: "Метка",
   },
   variable: {
-    regex: /^[а-я][0-7]{3} ?/i,
-    errorMessage: "Допущена ошибка в переменной",
+    regex: /^[а-я][0-7]{3}[\s\=]/i,
+    errorMessage: "Переменная отсутствует или имеет некорректный формат. Корректный формат (Буква Циф Циф Циф)",
     name: "Переменная",
   },
   colon: {
@@ -111,6 +111,7 @@ export default {
 
 export const customErrorList = {
   signExpected: "Ожидался один из знаков операций",
+  emptyRightPart: "Правая часть не может быть пустой",
   unexpectedValueInRigthPart: "Некорректное значение в правой части",
   overMaxDepth: "Превышена максимальная допустимая глубина вложенности квадратных скобок",
   noOpeningParentheses: "В скобках обнаружено несоответствие",

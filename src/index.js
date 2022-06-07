@@ -1,4 +1,4 @@
-import { start } from "./lexer.js"
+import { start, clearList } from "./lexer.js"
 
 const input = document.querySelector('#input')
 const errorField = document.querySelector("#output")
@@ -24,8 +24,11 @@ button.addEventListener("click", function() {
 
   try {
     start(text)
+    errorField.innerText = "Ошибок не обнаружено"
   } catch(err) {
     const context = err.text.split(' ')[0]
+
+    clearList()
 
     input.innerHTML = input.innerHTML.replace(context ?? ' ', `<span class="error" contenteditable="false">${context ?? ' '}</span>`)
 
