@@ -110,7 +110,7 @@ export default {
 }
 
 export const customErrorList = {
-  signExpected: "Ожидался один из знаков операций",
+  signExpected: "Ожидался один из знаков операций или \";\"",
   emptyRightPart: "Правая часть не может быть пустой",
   unexpectedValueInRigthPart: "Некорректное значение в правой части",
   overMaxDepth: "Превышена максимальная допустимая глубина вложенности квадратных скобок",
