@@ -56,7 +56,7 @@ h1 {
   padding-top: 0;
 }
 
-#input::selection {
+mark {
   background-color: red;
 }
 
