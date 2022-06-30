@@ -22,6 +22,11 @@ export function start(text) {
     return checkMembers(text.substring(temp[0].length), true)
   }
 
+  const tem2p = text.match(t.end.regex)
+  if (!tem2p) {
+    throw ({ message: t.end.errorMessage, text: text })
+  }
+
   throw ({ message: t.begin.errorMessage, text: text })
 }
 
@@ -96,7 +101,7 @@ function checkAssign(text) {
   throw ({ message: t.assign.errorMessage, text: text })
 }
 
-function checkRightPart(text, isContinuing = false, isEmpty = false, parenthesesBefore = false) {
+function checkRightPart(text, isContinuing = false, isEmpty = false, parenthesesBefore = false, qwer = false) {
   if (matchAny(
         text, 
         t.openingCircleBracket.regex,
@@ -222,7 +227,6 @@ function checkRightPart(text, isContinuing = false, isEmpty = false, parentheses
       t.openingCircleBracket.regex,
       t.openingSquareBracket.regex,
     )) {
-
       return checkParentheses(text)
     }
   }
@@ -251,7 +255,8 @@ function checkRightPart(text, isContinuing = false, isEmpty = false, parentheses
         throw ({ message: customErrorList.noOpeningParentheses, text: text })
       }
 
-      return
+      if (qwer) throw ({ message: "После знака операций не может идти \"Конец\"", text: text })
+      else return
     }
 
     if (text.length < t.end.name.length) {
@@ -262,10 +267,14 @@ function checkRightPart(text, isContinuing = false, isEmpty = false, parentheses
       throw ({ message: t.end.errorMessage, text: text })
     }
 
-    throw ({ message: customErrorList.unexpectedValueInRigthPart, text: text })
+    if (text[0] !== '-' && isEmpty) 
+      throw ({ message: customErrorList.unexpectedValueInRigthPart, text: text })
+    else {
+      return checkRightPart(text.substring(1), false, true)
+    }
   }
 
-  throw ({ message: customErrorList.unexpectedValueInRigthPart, text: text })
+  throw ({ message: t.end.errorMessage, text: text })
 }
 
 function checkSigns(text) {
@@ -289,9 +298,15 @@ function checkSigns(text) {
     t.devide.regex,
     t.power.regex,
   )) {
-    return checkRightPart(text[1] === ' ' ? text.substring(2) : text.substring(1))
+    return checkRightPart(text[1] === ' ' ? text.substring(2) : text.substring(1), false, false, false, true)
   }
 
+  if (matchAny(
+    text,
+    t.end.regex,
+  )) {
+    return
+  }
 
   throw ({ message: customErrorList.signExpected, text: text })
 }

@@ -1,5 +1,7 @@
 import { start, clearList } from "./lexer.js"
 
+import { countRightPart } from "./countRightPart.js"
+
 const input = document.querySelector('#input')
 const errorField = document.querySelector("#output")
 const button = document.querySelector('#action')
@@ -30,7 +32,13 @@ button.addEventListener("click", function() {
   try {
     start(text)
     errorField.innerText = "Ошибок не обнаружено"
+    const variableList = countRightPart(text)
+
+    variableList.forEach(({key, value}) => {
+      errorField.innerText += '\n' + key + ' = ' + value
+    })
   } catch(err) {
+    console.warn(err);
     const context = err.text.split(' ')[0]
 
     clearList()
@@ -40,12 +48,13 @@ button.addEventListener("click", function() {
     if (context.length !== 0) {
       
       input.childNodes.forEach((line) => {
-        if (line.firstChild.nodeValue.indexOf(context) !== -1) {
+        const currentValue = line?.firstChild ? line.firstChild?.nodeValue ?? '' : line?.nodeValue ?? ''
+        if (currentValue.indexOf(context) !== -1) {
 
-          const selectionStartIndex = line.firstChild.nodeValue.indexOf(context)
+          const selectionStartIndex = currentValue.indexOf(context)
 
-          range.setStart(line.firstChild, selectionStartIndex)
-          range.setEnd(line.firstChild, selectionStartIndex + context.length)
+          range.setStart(line?.firstChild ?? line, selectionStartIndex)
+          range.setEnd(line?.firstChild ?? line, selectionStartIndex + context.length)
           
           
           return
